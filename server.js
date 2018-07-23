@@ -13,6 +13,10 @@ const app         = express();
 const http        = require('http').Server(app);
 const io          = require('socket.io')(http);
 const sessionStore= new session.MemoryStore();
+const passportSocketIo = require('passport.socketio');
+
+
+
 
 // io.connect('https://learn.freecodecamp.org');
 
@@ -30,8 +34,16 @@ app.use(session({
   saveUninitialized: true,
   key: 'express.sid',
   store: sessionStore,
+  success: function () {console.log("Successful auth");},
+  fail: function () {console.log("Failed auth");},
 }));
 
+io.use(passportSocketIo.authorize({
+  cookieParser: cookieParser,
+  key:          'express.sid',
+  secret:       process.env.SESSION_SECRET,
+  store:        sessionStore
+}));
 
 mongo.connect(process.env.DATABASE, (err, db) => {
   if(err) console.log('Database error: ' + err);
@@ -45,7 +57,8 @@ mongo.connect(process.env.DATABASE, (err, db) => {
   var currentUsers = 0;
   io.on('connection', socket => {
     
-    console.log('A user has connected');
+    // console.log('A user has connected');
+    console.log('user ' + socket.request.user.name + ' connected');
     currentUsers+=1;
     io.emit('user count', currentUsers);    
     
