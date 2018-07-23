@@ -8,6 +8,9 @@ $( document ).ready(function() {
     console.log(data);
     
   });
+  socket.on('user disconnect', function(data){
+    console.log('A user has disconnected. Now there are '+data+' user(s).');
+  });
   
   // Form submittion with new message in field with id 'm'
   $('form').submit(function(){
