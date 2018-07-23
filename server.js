@@ -14,6 +14,7 @@ const http        = require('http').Server(app);
 const io          = require('socket.io')(http);
 const sessionStore= new session.MemoryStore();
 
+// io.connect('https://learn.freecodecamp.org');
 
 fccTesting(app); //For FCC testing purposes
 
@@ -41,9 +42,13 @@ mongo.connect(process.env.DATABASE, (err, db) => {
   http.listen(process.env.PORT || 3000);
 
   //start socket.io code  
-
-    io.on('connection', socket => {
+  var currentUsers = 0;
+  io.on('connection', socket => {
+    
     console.log('A user has connected');
+    currentUsers+=1;
+    io.emit('user count', currentUsers);    
+    
   });
 
   //end socket.io code
