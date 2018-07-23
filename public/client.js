@@ -28,6 +28,10 @@ $( document ).ready(function() {
   //   console.log('A user has disconnected. Now there are '+data+' user(s).');
   // });
   
+  socket.on('new message', function(data){
+    $('#messages').append($('<li>').html('<b>'+ data.name +' : '+data.message +'<\/b>'));
+  });
+  
   // Form submittion with new message in field with id 'm'
   $('form').submit(function(){
     var messageToSend = $('#m').val();
